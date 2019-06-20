@@ -1,5 +1,5 @@
 language: node_js
 script:
-  - npm install
-  - npm test
-  - npm test -- --coverage
+  - yarn install
+  - yarn test
+  - yarn test --coverage
