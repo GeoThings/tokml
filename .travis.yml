@@ -2,4 +2,4 @@ language: node_js
 script:
   - npm install
   - npm test
-  - npm run cov
+  - npm test -- --coverage
