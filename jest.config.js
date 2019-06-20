@@ -1,4 +1,4 @@
 module.exports = {
     preset: 'ts-jest',
-    modulePathIgnorePatterns: ["build"]
+    modulePathIgnorePatterns: ["<rootDir>/build"]
 }
