@@ -5,31 +5,35 @@ import tokml from '../src'
 const fuzzer = require('fuzzer')
 
 function geq(name: string, options?: any) {
-    var expected = tokml(file(name + '.geojson'), options);
-    if (process.env.UPDATE) {
-        fs.writeFileSync(path.join(__dirname, '/data/', name + '.kml'), expected);
-    }
-    expect(expected).toBe(output(name + '.kml'));
+    return test(name, () => {
+        var expected = tokml(file(name + '.geojson'), options);
+        if (process.env.UPDATE) {
+            fs.writeFileSync(path.join(__dirname, '/data/', name + '.kml'), expected);
+        }
+        expect(expected).toBe(output(name + '.kml'));
+    })
 }
 
 function testColor(inputColor: string | null, inputOpacity: number | null , expected: string) {
-    var featureCollection = file('linestring.geojson');
-    var props = featureCollection.features[0].properties;
-    if (inputColor !== null) props['stroke'] = inputColor;
-    if (inputOpacity !== null) props['stroke-opacity'] = inputOpacity;
+    return test(expected, () => {
+        var featureCollection = file('linestring.geojson');
+        var props = featureCollection.features[0].properties;
+        if (inputColor !== null) props['stroke'] = inputColor;
+        if (inputOpacity !== null) props['stroke-opacity'] = inputOpacity;
 
-    var kml = tokml(featureCollection, { simplestyle: true });
+        var kml = tokml(featureCollection, { simplestyle: true });
 
-    if (inputColor) {
-        var colorValue = kml.substr(kml.indexOf('<color>') + 7, 8);
+        if (inputColor) {
+            var colorValue = kml.substr(kml.indexOf('<color>') + 7, 8);
 
-        expect(colorValue).toBe(expected)
-    } else {
-        expect(kml.indexOf('<color>')).toBe(-1);
-    }
+            expect(colorValue).toBe(expected)
+        } else {
+            expect(kml.indexOf('<color>')).toBe(-1);
+        }
+    })
 }
 
-test('geometry', function () {
+describe('geometry', function () {
     geq('polygon');
     geq('linestring');
     geq('multilinestring');
@@ -39,7 +43,7 @@ test('geometry', function () {
     geq('geometrycollection_nogeometries');
 });
 
-test('quirks', function () {
+describe('quirks', function () {
     geq('cdata');
     geq('singlefeature');
     geq('singlegeometry');
@@ -55,7 +59,7 @@ test('quirks', function () {
     geq('multilinestring_none');
 });
 
-test('name & description', function () {
+describe('name & description', function () {
     geq('name_desc');
     geq('document_name_desc', {
         documentName: 'Document Title',
@@ -63,7 +67,7 @@ test('name & description', function () {
     });
 });
 
-test('timestamp', function () {
+describe('timestamp', function () {
     geq('timestamp', {
         name: 'name',
         description: 'description',
@@ -71,7 +75,7 @@ test('timestamp', function () {
     });
 });
 
-test('simplestyle spec', function () {
+describe('simplestyle spec', function () {
     var options = { simplestyle: true };
 
     geq('simplestyle_optionnotset');
@@ -97,7 +101,7 @@ test('simplestyle spec', function () {
     geq('simplestyle_geometrycollection', options);
 });
 
-test('simplestyle hex to kml color conversion', function () {
+describe('simplestyle hex to kml color conversion', function () {
     testColor('#ff5500', 1, 'ff0055ff');
     testColor('#0000ff', 1, 'ffff0000');
     testColor('#00ff00', 1, 'ff00ff00');
@@ -124,7 +128,7 @@ test('simplestyle hex to kml color conversion', function () {
     //testColor('ggg', null, 'ff555555');
 });
 
-test('fuzz', function () {
+describe('fuzz', function () {
     fuzzer.seed(0);
     glob.sync(__dirname + '/data/*.geojson').forEach(function (gj) {
         var generator = fuzzer.mutate.object(JSON.parse(fs.readFileSync(gj) as any));

@@ -225,7 +225,6 @@ function linearring(_: number[][]) {
 
 // ## Data
 function extendeddata(_: GeoJsonProperties) {
-    if (!_) return {}
     return { 'ExtendedData': { 'Data': pairs(_).map(data) } };
 }
 
