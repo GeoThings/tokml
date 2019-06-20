@@ -1,8 +1,8 @@
 {
   "name": "tokml",
   "version": "0.6.0",
-  "main": "build/index.js",
-  "typings": "build/index.d.ts",
+  "main": "build/src/index.js",
+  "typings": "build/src/index.d.ts",
   "author": "Tom MacWright, GeoThings Inc.",
   "license": "BSD-2-Clause",
   "scripts": {
