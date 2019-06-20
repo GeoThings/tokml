@@ -4,10 +4,10 @@ import { GeoJSON, Feature, Point, MultiPoint, LineString, MultiLineString, Polyg
 interface ToKMLOption {
     documentName?: string
     documentDescription?: string
-    name: string
-    description: string
-    simplestyle: boolean
-    timestamp: string
+    name?: string
+    description?: string
+    simplestyle?: boolean
+    timestamp?: string
 }
 
 export default function tokml(geojson: GeoJSON, initialOptions?: ToKMLOption) {
@@ -21,17 +21,25 @@ export default function tokml(geojson: GeoJSON, initialOptions?: ToKMLOption) {
     };
 
     const xml = XMLBuilder.create('kml', {
-        encoding: 'UTF-8'
+        encoding: 'UTF-8',
+        stringify: {
+            attValue: str => (
+                str.replace(/&/g, '&amp;')
+                    .replace(/</g, '&lt;')
+                    .replace(/>/g, '&gt;')
+                    .replace(/"/g, '&quot;')
+            )
+        }
     })
+    xml.att('xmlns', 'http://www.opengis.net/kml/2.2')
     const documentElement = xml.ele({
         Document: {
-            '@xmlns': 'http://www.opengis.net/kml/2.2',
             ...documentName(options),
             ...documentDescription(options)
         }
     });
     root(geojson, options, documentElement)
-    return xml.end()
+    return xml.end({allowEmpty: true})
 };
 
 function feature(options: ToKMLOption, styleHashesArray: string[], documentElement: XMLElement) {
@@ -61,7 +69,7 @@ function feature(options: ToKMLOption, styleHashesArray: string[], documentEleme
             }
         }
         if (styleDefinition) {
-            documentElement.ele(styleDefinition)
+            //documentElement.ele(styleDefinition)
         }
         const PlacemarkElement = documentElement.ele({
             Placemark: {
@@ -73,7 +81,7 @@ function feature(options: ToKMLOption, styleHashesArray: string[], documentEleme
         });
         geometry.any(_.geometry, PlacemarkElement)
         if (styleReference) {
-            PlacemarkElement.ele(styleReference)
+            //PlacemarkElement.ele(styleReference)
         }
     };
 }
@@ -106,15 +114,15 @@ function documentDescription(options: ToKMLOption) {
 }
 
 function name(_: GeoJsonProperties, options: ToKMLOption) {
-    return (_ && _[options.name]) ? { 'name': _[options.name] } : {};
+    return (_ && options.name && options.name in _) ? { 'name': _[options.name] } : {};
 }
 
 function description(_: GeoJsonProperties, options: ToKMLOption) {
-    return (_ && _[options.description]) ? { 'description': _[options.description] } : {};
+    return (_ && options.description && _[options.description]) ? { 'description': _[options.description] } : {};
 }
 
 function timestamp(_: GeoJsonProperties, options: ToKMLOption) {
-    return (_ && _[options.timestamp]) ? { 'TimeStamp': { 'when': _[options.timestamp] } } : {};
+    return (_ && options.timestamp && _[options.timestamp]) ? { 'TimeStamp': { 'when': _[options.timestamp] } } : {};
 }
 
 // ## Geometry Types
@@ -220,7 +228,7 @@ function extendeddata(_: GeoJsonProperties) {
 }
 
 function data(_: [string, any]) {
-    return { '@name': _[0], 'value': _[1] };
+    return { '@name': _[0], 'value': _[1] || '' };
 }
 
 // ## Marker style

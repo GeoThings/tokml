@@ -2,21 +2,22 @@
   "name": "tokml",
   "version": "0.6.0",
   "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "author": "Tom MacWright, GeoThings Inc.",
   "license": "BSD-2-Clause",
-  "module": "src/index.js",
   "scripts": {
-    "build": "webpack --mode production",
+    "build": "tsc",
     "test": "jest"
   },
   "devDependencies": {
-    "@babel/preset-typescript": "^7.3.3",
-    "@neutrinojs/jest": "^9.0.0-rc.3",
-    "@neutrinojs/library": "^9.0.0-rc.3",
     "@types/geojson": "^7946.0.7",
-    "fork-ts-checker-webpack-plugin": "^1.3.7",
+    "@types/glob": "^7.1.1",
+    "@types/jest": "^24.0.15",
+    "@types/node": "^12.0.8",
+    "fuzzer": "^0.2.1",
     "jest": "^24",
     "neutrino": "^9.0.0-rc.3",
+    "ts-jest": "^24.0.2",
     "typescript": "^3.5.2",
     "webpack": "^4",
     "webpack-cli": "^3"
