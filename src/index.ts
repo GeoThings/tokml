@@ -84,6 +84,13 @@ function feature(options: ToKMLOption, styleHashesArray: string[], documentEleme
         if (Object.keys(styleReference).length > 0) {
             PlacemarkElement.ele(styleReference)
         }
+        // Compatibility: Clear all elements when there is no geometry
+        const geometries = PlacemarkElement.children.filter(
+            c => c.type === 1).filter(
+            c => ['Point', 'LineString', 'Polygon', 'MultiGeometry'].indexOf((c as XMLElement).name) >= 0)
+        if (geometries.length === 0) {
+            PlacemarkElement.remove()
+        }
     };
 }
 
