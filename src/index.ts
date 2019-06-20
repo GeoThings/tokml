@@ -23,8 +23,9 @@ export default function tokml(geojson: GeoJSON, initialOptions?: ToKMLOption) {
     const xml = XMLBuilder.create('kml', {
         encoding: 'UTF-8',
         stringify: {
-            attValue: str => (
-                str.replace(/&/g, '&amp;')
+            // Compatibility with old tokml
+            attValue: obj => (
+                (typeof obj !== 'string') ? obj : obj.replace(/&/g, '&amp;')
                     .replace(/</g, '&lt;')
                     .replace(/>/g, '&gt;')
                     .replace(/"/g, '&quot;')
@@ -68,8 +69,8 @@ function feature(options: ToKMLOption, styleHashesArray: string[], documentEleme
                 // Note that style of GeometryCollection / MultiGeometry is not supported
             }
         }
-        if (styleDefinition) {
-            //documentElement.ele(styleDefinition)
+        if (Object.keys(styleDefinition).length > 0) {
+            documentElement.ele(styleDefinition)
         }
         const PlacemarkElement = documentElement.ele({
             Placemark: {
@@ -80,8 +81,8 @@ function feature(options: ToKMLOption, styleHashesArray: string[], documentEleme
             }
         });
         geometry.any(_.geometry, PlacemarkElement)
-        if (styleReference) {
-            //PlacemarkElement.ele(styleReference)
+        if (Object.keys(styleReference).length > 0) {
+            PlacemarkElement.ele(styleReference)
         }
     };
 }
@@ -224,6 +225,7 @@ function linearring(_: number[][]) {
 
 // ## Data
 function extendeddata(_: GeoJsonProperties) {
+    if (!_) return {}
     return { 'ExtendedData': { 'Data': pairs(_).map(data) } };
 }
 
