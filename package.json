@@ -32,8 +32,8 @@
     "tokml": "tokml"
   },
   "files": [
-    "build/index.ts",
-    "build/index.d.ts",
+    "build/src/index.ts",
+    "build/src/index.d.ts",
     "tokml"
   ]
 }
