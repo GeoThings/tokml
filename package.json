@@ -18,22 +18,16 @@
     "jest": "^24",
     "neutrino": "^9.0.0-rc.3",
     "ts-jest": "^24.0.2",
+    "tslint": "^5.17.0",
     "typescript": "^3.5.2",
     "webpack": "^4",
     "webpack-cli": "^3"
   },
   "dependencies": {
-    "minimist": "^1.2.0",
-    "rw": "^1.3.3",
-    "tslint": "^5.17.0",
     "xmlbuilder": "^13.0.2"
-  },
-  "bin": {
-    "tokml": "tokml"
   },
   "files": [
     "build/src/index.ts",
-    "build/src/index.d.ts",
-    "tokml"
+    "build/src/index.d.ts"
   ]
 }
