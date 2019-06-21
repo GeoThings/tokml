@@ -1,12 +1,12 @@
 {
   "name": "tokml",
   "version": "0.6.0",
-  "main": "build/src/index.js",
-  "typings": "build/src/index.d.ts",
+  "main": "build/index.js",
+  "typings": "build/index.d.ts",
   "author": "Tom MacWright, GeoThings Inc.",
   "license": "BSD-2-Clause",
   "scripts": {
-    "build": "tsc",
+    "build": "tsc -p tsconfig.build.json",
     "test": "jest"
   },
   "devDependencies": {
@@ -27,7 +27,7 @@
     "xmlbuilder": "^13.0.2"
   },
   "files": [
-    "build/src/index.ts",
-    "build/src/index.d.ts"
+    "build/index.ts",
+    "build/index.d.ts"
   ]
 }
